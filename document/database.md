@@ -102,7 +102,7 @@ tc_task_id
 
 tc_user_id
 
-tc_resource_id
+唯一索引:tc_absolute_path
 
 # 项目人员表
 
