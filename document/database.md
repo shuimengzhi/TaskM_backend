@@ -111,6 +111,7 @@ tc_user_id
 - pu_id `int 11 项目人员表id`
 - pu_project_id `int 11 项目id`
 - pu_user_id `int 11 用户id`
+- pu_create_time `int 11 创建时间`
 
 ### 索引
 
