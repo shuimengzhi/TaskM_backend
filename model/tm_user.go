@@ -18,7 +18,8 @@ type User struct {
 	/*
 		创建时间
 	*/
-	UCreateTime int32 `gorm:"column:u_create_time;not null;comment:创建时间" json:"u_create_time"`
+	UCreateTime int32  `gorm:"column:u_create_time;not null;comment:创建时间" json:"u_create_time"`
+	UToken      string `gorm:"column:u_token;not null;comment:token" json:"u_token"`
 }
 
 // TableName User's table name

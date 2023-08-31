@@ -5,6 +5,7 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"encoding/json"
+	"github.com/redis/go-redis/v9"
 	_ "github.com/redis/go-redis/v9"
 	"math/rand"
 	"strconv"
@@ -28,11 +29,6 @@ func EncryptPWD(password string) string {
 	hashThrice := md5.Sum([]byte(twiceString))
 	thrice := hex.EncodeToString(hashThrice[:])
 	return strings.ToLower(thrice)
-}
-
-func TokenKey(UserId int32) string {
-
-	return "user_token:" + strconv.Itoa(int(UserId))
 }
 
 func Token(UserId int32) string {
@@ -71,7 +67,7 @@ func Register(params userIoStruct.RegisterRequest) services.ResultService {
 func Login(params userIoStruct.LoginRequest) services.ResultService {
 	var userInfo model.User
 	encryptPwd := EncryptPWD(params.Password)
-	if err := model.DB.Select("u_id,u_account,u_nick_name,u_status,u_avatar,u_role_type").
+	if err := model.DB.Select("u_id,u_account,u_nick_name,u_status,u_avatar,u_role_type,u_token").
 		Where("u_account = ? and u_password = ?", params.UserName, encryptPwd).First(&userInfo).Error; err != nil {
 		return services.ResultService{Code: services.FAIL, Msg: err.Error() + " Login:1"}
 	}
@@ -84,8 +80,18 @@ func Login(params userIoStruct.LoginRequest) services.ResultService {
 	}
 
 	ctx := context.Background()
-	tokenKey := TokenKey(userInfo.UID)
 	token := Token(userInfo.UID)
+	tokenInfo, err := cache.Instance.Get(ctx, token).Result()
+	//如果有报错信息并且不是空的那种报错信息
+	if err != nil && err != redis.Nil {
+		return services.FailResponse(err.Error(), " Login:2")
+	}
+	//如果已经存在了就报错,重试
+	if tokenInfo != "" {
+		return services.FailResponse("服务繁忙,请重新尝试", "")
+	}
+	//删除数据库存的token
+	cache.Instance.Del(ctx, userInfo.UToken)
 	data := userIoStruct.LoginResponse{
 		UID:      userInfo.UID,
 		Account:  userInfo.UAccount,
@@ -98,11 +104,15 @@ func Login(params userIoStruct.LoginRequest) services.ResultService {
 
 	dataJson, err := json.Marshal(data)
 	if err != nil {
-		return services.FailResponse(err.Error(), "")
+		return services.FailResponse(err.Error(), " Login:3")
 	}
-	setErr := cache.Instance.Set(ctx, tokenKey, dataJson, 2*time.Hour).Err()
+	//数据库更新token
+	if err = model.DB.Model(&model.User{}).Where("u_id = ?", userInfo.UID).Updates(model.User{UToken: token}).Error; err != nil {
+		return services.FailResponse(err.Error(), " Login:4")
+	}
+	setErr := cache.Instance.Set(ctx, token, dataJson, 2*time.Hour).Err()
 	if setErr != nil {
-		return services.FailResponse(setErr.Error(), "")
+		return services.FailResponse(setErr.Error(), " Login:4")
 	}
 	return services.SuccessResponse(data, "success")
 }
