@@ -7,6 +7,7 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"os"
 	"taskm/cache"
+	user_controller "taskm/controllers/user"
 	"taskm/enum"
 	"taskm/middleware"
 )
@@ -39,6 +40,9 @@ func NewRouter() *gin.Engine {
 	if os.Getenv("GIN_MODE") == enum.ModeDevelop {
 		r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	}
-
+	user := r.Group("/user")
+	{
+		user.POST("/register", user_controller.Register)
+	}
 	return r
 }
