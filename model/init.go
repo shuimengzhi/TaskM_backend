@@ -31,7 +31,7 @@ func Database(connString string) {
 	db, err := gorm.Open(mysql.Open(connString), &gorm.Config{
 		Logger: newLogger,
 		NamingStrategy: schema.NamingStrategy{
-			TablePrefix: "ot_", // table name prefix, table for `User` would be `t_users`
+			TablePrefix: "tm_", // table name prefix, table for `User` would be `t_users`
 		},
 	})
 	// Error
