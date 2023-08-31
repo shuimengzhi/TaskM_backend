@@ -25,3 +25,12 @@ type User struct {
 func (*User) TableName() string {
 	return TableNameUser
 }
+
+// 1:管理员 2:普通人
+const USER_ROLE_TYPE_ADMIN = 1
+
+const USER_ROLE_TYPE_GENERAL = 2
+
+// 1:正常 2:禁用
+const USER_STATUS_NORMAL = 1
+const USER_STATUS_BAN = 2

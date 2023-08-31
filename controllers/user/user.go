@@ -10,6 +10,14 @@ import (
 	userservice "taskm/services/user"
 )
 
+// Register godoc
+// @Summary      注册
+// @Description  注册
+// @Tags         user
+// @Accept       json
+// @Param request body userIoStruct.RegisterRequest true "params"
+// @Success      200  {object}  commonIoStruct.Response
+// @Router       /user/register [post]
 func Register(c *gin.Context) {
 	var params userIoStruct.RegisterRequest
 	err := c.BindJSON(&params)
@@ -27,28 +35,27 @@ func Register(c *gin.Context) {
 	return
 }
 
-//func Login(c *gin.Context) {
-//	var params systemIoStruct.LoginRequest
-//	err := c.BindJSON(&params)
-//	if err != nil {
-//		c.JSON(http.StatusOK, commonIoStruct.Response{Code: enum.CodeParamErr, Msg: err.Error()})
-//		return
-//	}
-//	//  判断验证码是否正确
-//	if os.Getenv("GIN_MODE") == enum.ModeProduct {
-//		// 用redis作为存储
-//		var store = captcha.NewStore(cache.Instance, context.Background())
-//		//verify the captcha
-//		if !store.Verify(params.CaptchaId, params.CaptchaValue, true) {
-//			c.JSON(http.StatusOK, commonIoStruct.Response{Code: enum.CodeBad, Msg: "验证码验证失败"})
-//			return
-//		}
-//	}
-//	result := service2.LoginService(params)
-//	if result.Code == service.FAIL {
-//		c.JSON(http.StatusOK, commonIoStruct.Response{Code: enum.CodeBad, Msg: result.Msg, Data: result.Data})
-//		return
-//	}
-//	c.JSON(http.StatusOK, commonIoStruct.Response{Code: enum.CodeOk, Data: result.Data, Msg: result.Msg})
-//	return
-//}
+// Login godoc
+// @Summary      登陆
+// @Description  登陆
+// @Tags         user
+// @Accept       json
+// @Param request body userIoStruct.LoginRequest true "params"
+// @Success      200  {object}  commonIoStruct.Response
+// @Router       /user/login [post]
+func Login(c *gin.Context) {
+	var params userIoStruct.LoginRequest
+	err := c.BindJSON(&params)
+	if err != nil {
+		c.JSON(http.StatusOK, commonIoStruct.Response{Code: enum.CodeParamErr, Msg: err.Error()})
+		return
+	}
+
+	result := userservice.Login(params)
+	if result.Code == services.FAIL {
+		c.JSON(http.StatusOK, commonIoStruct.Response{Code: enum.CodeBad, Msg: result.Msg, Data: result.Data})
+		return
+	}
+	c.JSON(http.StatusOK, commonIoStruct.Response{Code: enum.CodeOk, Data: result.Data, Msg: result.Msg})
+	return
+}

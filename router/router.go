@@ -43,6 +43,7 @@ func NewRouter() *gin.Engine {
 	user := r.Group("/user")
 	{
 		user.POST("/register", user_controller.Register)
+		user.POST("/login", user_controller.Login)
 	}
 	return r
 }
