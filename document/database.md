@@ -12,10 +12,12 @@
 - u_avatar `varchar 200 头像地址`
 - u_role_type `int 11 1:管理员 2:普通人`
 - u_create_time `int 11 创建时间`
+- u_token `varchar 150`
 
 ### 索引
 
 唯一索引: u_account
+唯一索引: u_token
 
 # 项目表
 
