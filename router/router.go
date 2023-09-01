@@ -7,6 +7,7 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"os"
 	"taskm/cache"
+	common_controller "taskm/controllers/common"
 	user_controller "taskm/controllers/user"
 	"taskm/enum"
 	"taskm/middleware"
@@ -40,14 +41,26 @@ func NewRouter() *gin.Engine {
 	if os.Getenv("GIN_MODE") == enum.ModeDevelop {
 		r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	}
+	static := r.Group("/static")
+	{
+		static.Static("/avatar", "./upload/avatar")
+	}
+	upload := r.Group("/upload")
+	{
+		uploadAuth := upload.Use(middleware.AuthRequired())
+		{
+			uploadAuth.POST("/avatar", common_controller.UploadAvatar)
+		}
+
+	}
 	user := r.Group("/user")
 	{
+		user.POST("/login", user_controller.Login)
 		adminAuth := user.Use(middleware.AdminAuth())
 		{
 			adminAuth.POST("/register", user_controller.Register)
 		}
 
-		user.POST("/login", user_controller.Login)
 	}
 	return r
 }
