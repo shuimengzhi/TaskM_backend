@@ -18,14 +18,14 @@ func UploadAvatar(c *gin.Context) {
 	userInfo := usercontroller.GetUserInfo(c)
 	ext := filepath.Ext(file.Filename)
 	fileName := extend.GetMD5(strconv.Itoa(int(userInfo.UID))) + ext
-	dst := "upload/avatar/" + fileName
+	savePath := "upload/avatar/" + fileName
 	// 上传文件至指定的完整文件路径
-	err := c.SaveUploadedFile(file, dst)
+	err := c.SaveUploadedFile(file, savePath)
 	if err != nil {
 		c.JSON(http.StatusOK, commonIoStruct.Response{Code: enum.CodeBad, Msg: err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, commonIoStruct.Response{Code: enum.CodeOk, Data: dst})
+	c.JSON(http.StatusOK, commonIoStruct.Response{Code: enum.CodeOk, Data: fileName})
 	return
 }
 func UploadCommentFile(c *gin.Context) {
