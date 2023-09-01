@@ -1,6 +1,8 @@
 package extend
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	commoniostruct "taskm/io_struct/common"
@@ -14,4 +16,15 @@ func PrintResponseJson(data string) {
 	// 格式化输出
 	respJson, _ := json.MarshalIndent(resp, "", "    ")
 	fmt.Println(string(respJson))
+}
+
+// VarDump 打印数据
+func VarDump(expression ...interface{}) {
+	fmt.Println(fmt.Sprintf("%#v", expression))
+}
+
+func GetMD5(str string) string {
+	h := md5.New()
+	h.Write([]byte(str))
+	return hex.EncodeToString(h.Sum(nil))
 }

@@ -2,18 +2,23 @@ package common_controller
 
 import (
 	"github.com/gin-gonic/gin"
-	"log"
 	"net/http"
+	"path/filepath"
+	"strconv"
+	usercontroller "taskm/controllers/user"
 	"taskm/enum"
+	"taskm/extend"
 	commonIoStruct "taskm/io_struct/common"
 )
 
 func UploadAvatar(c *gin.Context) {
 	// 单文件
 	file, _ := c.FormFile("file")
-	log.Println(file.Filename)
 
-	dst := "upload/avatar/" + file.Filename
+	userInfo := usercontroller.GetUserInfo(c)
+	ext := filepath.Ext(file.Filename)
+	fileName := extend.GetMD5(strconv.Itoa(int(userInfo.UID))) + ext
+	dst := "upload/avatar/" + fileName
 	// 上传文件至指定的完整文件路径
 	err := c.SaveUploadedFile(file, dst)
 	if err != nil {

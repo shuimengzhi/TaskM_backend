@@ -59,3 +59,12 @@ func Login(c *gin.Context) {
 	c.JSON(http.StatusOK, commonIoStruct.Response{Code: enum.CodeOk, Data: result.Data, Msg: result.Msg})
 	return
 }
+
+func GetUserInfo(c *gin.Context) *userIoStruct.LoginResponse {
+	if user, _ := c.Get("user_info"); user != nil {
+		if u, ok := user.(*userIoStruct.LoginResponse); ok {
+			return u
+		}
+	}
+	return nil
+}
