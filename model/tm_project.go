@@ -50,3 +50,8 @@ type Project struct {
 func (*Project) TableName() string {
 	return TableNameProject
 }
+
+// p_status 1:正常 2:禁用 3:完结
+const PROJECT_STATUS_NORMAL = 1
+const PROJECT_STATUS_BAN = 2
+const PROJECT_STATUS_DONE = 3
