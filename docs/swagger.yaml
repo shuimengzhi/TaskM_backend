@@ -1,0 +1,107 @@
+definitions:
+  common_io_struct.Response:
+    properties:
+      code:
+        type: integer
+      data: {}
+      error:
+        type: string
+      msg:
+        type: string
+    type: object
+  project.CreateRequest:
+    properties:
+      p_name:
+        type: string
+    required:
+    - p_name
+    type: object
+  user_io_struct.LoginRequest:
+    properties:
+      password:
+        type: string
+      user_name:
+        type: string
+    required:
+    - password
+    - user_name
+    type: object
+  user_io_struct.RegisterRequest:
+    properties:
+      account:
+        type: string
+      avatar:
+        type: string
+      nick_name:
+        type: string
+      role_type:
+        type: integer
+    required:
+    - account
+    - nick_name
+    - role_type
+    type: object
+info:
+  contact: {}
+paths:
+  /task/project/create:
+    post:
+      consumes:
+      - application/json
+      description: 创建项目
+      parameters:
+      - description: params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/project.CreateRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common_io_struct.Response'
+      summary: 创建项目
+      tags:
+      - project
+  /user/login:
+    post:
+      consumes:
+      - application/json
+      description: 登陆
+      parameters:
+      - description: params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/user_io_struct.LoginRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common_io_struct.Response'
+      summary: 登陆
+      tags:
+      - user
+  /user/register:
+    post:
+      consumes:
+      - application/json
+      description: 注册
+      parameters:
+      - description: params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/user_io_struct.RegisterRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common_io_struct.Response'
+      summary: 注册
+      tags:
+      - user
+swagger: "2.0"
