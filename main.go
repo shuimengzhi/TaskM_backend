@@ -4,7 +4,7 @@ import (
 	"flag"
 	"os"
 	"taskm/core"
-	//_ "taskm/docs"
+	_ "taskm/docs"
 	"taskm/router"
 )
 
