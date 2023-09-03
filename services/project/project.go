@@ -9,7 +9,8 @@ import (
 )
 
 func ProjectCreate(request project_io_struct.CreateRequest, userInfo *useriostruct.LoginResponse) services.ResultService {
-
+	tx := model.DB.Begin()
+	//创建项目
 	projectModel := model.Project{
 		PName:           request.ProjectName,
 		PStatus:         model.PROJECT_STATUS_NORMAL,
@@ -18,10 +19,18 @@ func ProjectCreate(request project_io_struct.CreateRequest, userInfo *useriostru
 		PCreateTime:     int32(time.Now().Unix()),
 		PUpdateTime:     int32(time.Now().Unix()),
 	}
-	result := model.DB.Create(&projectModel)
-	if result.Error != nil {
-		return services.ResultService{Code: services.FAIL, Msg: result.Error.Error()}
+
+	if err := tx.Create(&projectModel).Error; err != nil {
+		tx.Rollback()
+		return services.ResultService{Code: services.FAIL, Msg: err.Error()}
 	}
+	// 创建项目个人关系表
+	projectUserModel := model.ProjectUser{PuProjectID: projectModel.PID, PuUserID: userInfo.UID, PuCreateTime: int32(time.Now().Unix())}
+	if err := tx.Create(&projectUserModel).Error; err != nil {
+		tx.Rollback()
+		return services.ResultService{Code: services.FAIL, Msg: err.Error()}
+	}
+	tx.Commit()
 	return services.ResultService{Code: services.SUCCESS}
 }
 

@@ -46,7 +46,7 @@ func TestProjectCreate(t *testing.T) {
 
 	router := router2.NewRouter()
 	w := httptest.NewRecorder()
-	request := project_io_struct.CreateRequest{ProjectName: "one"}
+	request := project_io_struct.CreateRequest{ProjectName: "two"}
 	infoJson, _ := json.Marshal(request)
 	req, _ := http.NewRequest("POST", "/project/create", strings.NewReader(string(infoJson)))
 	req.Header.Set("token", token)
@@ -62,7 +62,7 @@ func TestProjectList(t *testing.T) {
 
 	router := router2.NewRouter()
 	w := httptest.NewRecorder()
-	request := project_io_struct.ListRequest{ProjectName: "one", Page: 1, Size: 20}
+	request := project_io_struct.ListRequest{Page: 1, Size: 20}
 	infoJson, _ := json.Marshal(request)
 	req, _ := http.NewRequest("POST", "/project/list", strings.NewReader(string(infoJson)))
 	req.Header.Set("token", token)
