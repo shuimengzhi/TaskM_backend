@@ -46,9 +46,25 @@ func TestProjectCreate(t *testing.T) {
 
 	router := router2.NewRouter()
 	w := httptest.NewRecorder()
-	request := project.CreateRequest{ProjectName: "one"}
+	request := project_io_struct.CreateRequest{ProjectName: "one"}
 	infoJson, _ := json.Marshal(request)
 	req, _ := http.NewRequest("POST", "/project/create", strings.NewReader(string(infoJson)))
+	req.Header.Set("token", token)
+	router.ServeHTTP(w, req)
+	fmt.Println(fmt.Sprintf("%#v", w.Body.String()))
+}
+
+func TestProjectList(t *testing.T) {
+	token := setupLogin()
+	envPath, _ := os.Getwd()
+	envPath = envPath + "/../../.env"
+	core.LoadCore(envPath)
+
+	router := router2.NewRouter()
+	w := httptest.NewRecorder()
+	request := project_io_struct.ListRequest{ProjectName: "one", Page: 1, Size: 20}
+	infoJson, _ := json.Marshal(request)
+	req, _ := http.NewRequest("POST", "/project/list", strings.NewReader(string(infoJson)))
 	req.Header.Set("token", token)
 	router.ServeHTTP(w, req)
 	fmt.Println(fmt.Sprintf("%#v", w.Body.String()))

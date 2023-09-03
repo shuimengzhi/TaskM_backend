@@ -18,7 +18,7 @@ import (
 // @Accept       json
 // @Param request body project.CreateRequest true "params"
 // @Success      200  {object}  commonIoStruct.Response
-// @Router       /task/project/create [post]
+// @Router       /project/create [post]
 func ProjectCreate(c *gin.Context) {
 	userInfo := usercontroller.GetUserInfo(c)
 	if userInfo == nil {
@@ -26,7 +26,7 @@ func ProjectCreate(c *gin.Context) {
 		return
 	}
 
-	var params project.CreateRequest
+	var params project_io_struct.CreateRequest
 	err := c.BindJSON(&params)
 	if err != nil {
 		c.JSON(http.StatusOK, commonIoStruct.Response{Code: enum.CodeParamErr, Msg: err.Error()})
@@ -34,6 +34,37 @@ func ProjectCreate(c *gin.Context) {
 	}
 	result := projectservice.ProjectCreate(params, userInfo)
 
+	if result.Code == services.FAIL {
+		c.JSON(http.StatusOK, commonIoStruct.Response{Code: enum.CodeBad, Msg: result.Msg, Data: result.Data})
+		return
+	}
+	c.JSON(http.StatusOK, commonIoStruct.Response{Code: enum.CodeOk, Data: result.Data, Msg: result.Msg})
+	return
+}
+
+// ProjectList godoc
+// @Summary      项目列表
+// @Description  项目列表
+// @Tags         project
+// @Accept       json
+// @Param request body project_io_struct.ProjectListRequest true "params"
+// @Param Authorization header string true "token"
+// @Success      200  {object}  project_io_struct.ProjectListResponse
+// @Router       /project/list [post]
+func ProjectList(c *gin.Context) {
+	userInfo := usercontroller.GetUserInfo(c)
+	if userInfo == nil {
+		c.JSON(http.StatusOK, commonIoStruct.Response{Code: enum.CodeBad, Msg: "获取不到用户信息"})
+		return
+	}
+
+	var params project_io_struct.ListRequest
+	err := c.BindJSON(&params)
+	if err != nil {
+		c.JSON(http.StatusOK, commonIoStruct.Response{Code: enum.CodeParamErr, Msg: err.Error()})
+		return
+	}
+	result := projectservice.ProjectList(params, userInfo)
 	if result.Code == services.FAIL {
 		c.JSON(http.StatusOK, commonIoStruct.Response{Code: enum.CodeBad, Msg: result.Msg, Data: result.Data})
 		return

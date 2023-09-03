@@ -68,7 +68,7 @@ func NewRouter() *gin.Engine {
 		project.Use(middleware.AuthRequired())
 
 		project.POST("/create", project_controller.ProjectCreate)
-
+		project.POST("/list", project_controller.ProjectList)
 	}
 	return r
 }
