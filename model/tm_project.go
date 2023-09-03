@@ -25,23 +25,19 @@ type Project struct {
 	*/
 	PStatus int8 `gorm:"column:p_status;not null;default:1;comment:1:正常 2:禁用 3:完结" json:"p_status"`
 	/*
-		创建的用户id
-
+		负责的用户id
 	*/
-	PCreateUserID int32 `gorm:"column:p_create_user_id;not null;comment:创建的用户id" json:"p_create_user_id"`
+	PBelongUserID int32 `gorm:"column:p_belong_user_id;not null;comment:负责的用户id" json:"p_belong_user_id"`
 	/*
-		创建人昵称
-
+		负责人昵称
 	*/
-	PCreateUserName string `gorm:"column:p_create_user_name;not null;comment:创建人昵称" json:"p_create_user_name"`
+	PBelongUserName string `gorm:"column:p_belong_user_name;not null;comment:负责人昵称" json:"p_belong_user_name"`
 	/*
 		创建时间
-
 	*/
 	PCreateTime int32 `gorm:"column:p_create_time;not null;comment:创建时间" json:"p_create_time"`
 	/*
 		更改时间
-
 	*/
 	PUpdateTime int32 `gorm:"column:p_update_time;not null;comment:更改时间" json:"p_update_time"`
 }

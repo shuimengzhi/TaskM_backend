@@ -69,3 +69,19 @@ func TestProjectList(t *testing.T) {
 	router.ServeHTTP(w, req)
 	fmt.Println(fmt.Sprintf("%#v", w.Body.String()))
 }
+
+func TestProjectUpdate(t *testing.T) {
+	token := setupLogin()
+	envPath, _ := os.Getwd()
+	envPath = envPath + "/../../.env"
+	core.LoadCore(envPath)
+
+	router := router2.NewRouter()
+	w := httptest.NewRecorder()
+	request := project_io_struct.UpdateRequest{PID: 2, PStatus: 1}
+	infoJson, _ := json.Marshal(request)
+	req, _ := http.NewRequest("POST", "/project/update", strings.NewReader(string(infoJson)))
+	req.Header.Set("token", token)
+	router.ServeHTTP(w, req)
+	fmt.Println(fmt.Sprintf("%#v", w.Body.String()))
+}

@@ -50,15 +50,15 @@ type Task struct {
 	*/
 	TBelongUserName string `gorm:"column:t_belong_user_name;not null;comment:负责人昵称" json:"t_belong_user_name"`
 	/*
-		创建的用户id
+		负责的用户id
 
 	*/
-	TCreateUserID int32 `gorm:"column:t_create_user_id;not null;comment:创建的用户id" json:"t_create_user_id"`
+	TCreateUserID int32 `gorm:"column:t_create_user_id;not null;comment:负责的用户id" json:"t_create_user_id"`
 	/*
-		创建人昵称
+		负责人昵称
 
 	*/
-	TCreateUserName string `gorm:"column:t_create_user_name;not null;comment:创建人昵称" json:"t_create_user_name"`
+	TCreateUserName string `gorm:"column:t_create_user_name;not null;comment:负责人昵称" json:"t_create_user_name"`
 	/*
 		1:未完成 2:完成
 

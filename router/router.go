@@ -69,6 +69,7 @@ func NewRouter() *gin.Engine {
 
 		project.POST("/create", project_controller.ProjectCreate)
 		project.POST("/list", project_controller.ProjectList)
+		project.POST("/update", project_controller.ProjectUpdate)
 	}
 	return r
 }

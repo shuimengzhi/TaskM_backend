@@ -14,8 +14,8 @@ func ProjectCreate(request project_io_struct.CreateRequest, userInfo *useriostru
 	projectModel := model.Project{
 		PName:           request.ProjectName,
 		PStatus:         model.PROJECT_STATUS_NORMAL,
-		PCreateUserID:   userInfo.UID,
-		PCreateUserName: userInfo.NickName,
+		PBelongUserID:   userInfo.UID,
+		PBelongUserName: userInfo.NickName,
 		PCreateTime:     int32(time.Now().Unix()),
 		PUpdateTime:     int32(time.Now().Unix()),
 	}
@@ -53,4 +53,32 @@ func ProjectList(request project_io_struct.ListRequest, userInfo *useriostruct.L
 	}
 	return services.ResultService{Code: services.SUCCESS,
 		Data: project_io_struct.ProjectListResponse{List: response, Count: count}, Msg: "success"}
+}
+
+func ProjectUpdate(request project_io_struct.UpdateRequest, userInfo *useriostruct.LoginResponse) services.ResultService {
+	var projectModel model.Project
+	var newBelongUser model.User
+	if err := model.DB.Where("p_id = ? and p_belong_user_id = ?", request.PID, userInfo.UID).First(&projectModel).Error; err != nil {
+		return services.ResultService{Code: services.FAIL, Msg: err.Error() + " ProjectUpdate:1"}
+	}
+	if projectModel.PID == 0 {
+		return services.ResultService{Code: services.FAIL, Msg: "找不到要更改的项目"}
+	}
+	if request.PBelongUserID != 0 {
+		if err := model.DB.Model(model.User{}).Where("u_id = ? and u_status = ?", request.PBelongUserID, model.USER_STATUS_NORMAL).
+			Select("u_id,u_nick_name").First(&newBelongUser).Error; err != nil {
+			return services.ResultService{Code: services.FAIL, Msg: err.Error() + " ProjectUpdate:2"}
+		}
+		if newBelongUser.UID == 0 {
+			return services.ResultService{Code: services.FAIL, Msg: "找不到新的负责人"}
+		}
+	}
+	// 更新模型的
+
+	if err := model.DB.Model(model.Project{}).Where("p_id = ?", request.PID).
+		Updates(model.Project{PName: request.PName, PStatus: request.PStatus, PBelongUserID: newBelongUser.UID,
+			PBelongUserName: newBelongUser.UNickName, PUpdateTime: int32(time.Now().Unix())}).Error; err != nil {
+		return services.ResultService{Code: services.FAIL, Msg: err.Error() + " ProjectUpdate:3"}
+	}
+	return services.ResultService{Code: services.SUCCESS}
 }

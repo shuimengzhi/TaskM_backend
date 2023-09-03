@@ -26,8 +26,8 @@
 - p_id `int 11 项目id`
 - p_name `varchar 50 项目名称`
 - p_status `tinyint 1 1:正常 2:禁用 3:完结`
-- p_create_user_id `int 11 创建的用户id`
-- p_create_user_name `varchar 50 创建人昵称`
+- p_belong_user_id `int 11 负责的用户id`
+- p_belong_user_name `varchar 50 负责人昵称`
 - p_create_time `int 11 创建时间`
 - p_update_time `int 11 更改时间`
 
@@ -53,8 +53,8 @@
 - t_task_tag_id `int 11 任务标签id`
 - t_belong_user_id `int 11 负责人id`
 - t_belong_user_name `varchar 50 负责人昵称`
-- t_create_user_id `int 11 创建的用户id`
-- t_create_user_name `varchar 50 创建人昵称`
+- t_create_user_id `int 11 负责的用户id`
+- t_create_user_name `varchar 50 负责人昵称`
 - t_status `tinyint 1 1:未完成 2:完成`
 - t_create_time `int 11 创建时间`
 

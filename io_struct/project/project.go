@@ -22,3 +22,11 @@ type ProjectListResponse struct {
 	List  []ProjectListItem `json:"list"`  // 项目列表
 	Count int64             `json:"count"` // 总数量
 }
+
+// UpdateRequest 项目更改的请求
+type UpdateRequest struct {
+	PID           int32  `json:"p_id" binding:"required"` // 项目 ID
+	PName         string `json:"p_name"`                  // 项目名称
+	PStatus       int8   `json:"p_status"`                //1:正常 2:禁用 3:完结
+	PBelongUserID int32  `json:"p_belong_user_id"`        //负责的用户id
+}
