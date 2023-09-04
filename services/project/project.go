@@ -82,3 +82,18 @@ func ProjectUpdate(request project_io_struct.UpdateRequest, userInfo *useriostru
 	}
 	return services.ResultService{Code: services.SUCCESS}
 }
+
+// ProjectAuthCheck 检查当前用户是否参与该项目
+func ProjectAuthCheck(UserId int32, ProjectId int32) services.ResultService {
+	var count int64
+	if err := model.DB.Model(model.ProjectUser{}).Where("pu_project_id = ? and pu_user_id = ?", ProjectId, UserId).Count(&count).Error; err != nil {
+		return services.ResultService{Code: services.FAIL, Msg: err.Error() + " ProjectAuthCheck:1"}
+	}
+	// 这个用户参与这个项目
+	if count > 0 {
+		return services.ResultService{Code: services.SUCCESS}
+	}
+	return services.ResultService{
+		Code: services.FAIL, Msg: "当前用户没有参与该项目",
+	}
+}

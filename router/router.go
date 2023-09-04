@@ -9,6 +9,7 @@ import (
 	"taskm/cache"
 	common_controller "taskm/controllers/common"
 	project_controller "taskm/controllers/project"
+	"taskm/controllers/task"
 	user_controller "taskm/controllers/user"
 	"taskm/enum"
 	"taskm/middleware"
@@ -70,6 +71,13 @@ func NewRouter() *gin.Engine {
 		project.POST("/create", project_controller.ProjectCreate)
 		project.POST("/list", project_controller.ProjectList)
 		project.POST("/update", project_controller.ProjectUpdate)
+	}
+	taskTag := r.Group("/task_tag")
+	{
+		taskTag.Use(middleware.AuthRequired())
+
+		taskTag.POST("/create", task_controller.TaskTagCreate)
+		taskTag.POST("/update", project_controller.ProjectUpdate)
 	}
 	return r
 }
